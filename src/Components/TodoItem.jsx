@@ -6,6 +6,8 @@ export function TodoItem({todo, toggleTodo}){
     const {id, task, completed} = todo;
 
     const handleTodoClick=()=>{
+        //verificacion si toggleTodo existe
+        if (toggleTodo === undefined) return;
         //se recibio a traves de props, se ejecuta y devuelve los cambios
         toggleTodo(id)
     }

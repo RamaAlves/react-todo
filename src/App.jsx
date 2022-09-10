@@ -4,15 +4,19 @@ import {v4 as uuidv4 } from "../node_modules/uuid/dist";
 
 
 export function App(){
+    //tareas por hacer
     const [todos, setTodos] = useState([
         //estado por defecto
         {id:1, task:"tarea 1", completed: false}
     ])
     
     //agregar tareas realizadas a nueva lista en un p al final
+    //tareas hechas
+    const [done, setDone] = useState([])
 
     //referencia para obtener el valor del input
     const todoTaskRef = useRef();
+
 
 
     //funcion para verificar el estado completed de cada tarea (se envia como prop hacia todo list y luego a todo item)
@@ -39,9 +43,22 @@ export function App(){
     }
     //funcion borrar tareas completas
     const handleClearAll = ()=>{
+        //copia de lista de tareas solo de elementos completos
+        const newDone = todos.filter((todo)=>todo.completed);
+        //validando que no se encuentre vacio el  array
+        if (newDone.length === 0) return;
+        //agregando a tareas realizadas
+        newDone.map((taskDone)=>(
+            setDone((prevDone)=>{
+                return [...prevDone, taskDone];
+            })
+        ))
+        
+        
         //copia de lista de tareas solo de elementos sin completar
         const newTodos = todos.filter((todo)=>!todo.completed);
         setTodos(newTodos);
+        
     }
 
 
@@ -53,6 +70,10 @@ export function App(){
                 <button onClick={handleClearAll}>🗑</button>
                 {/* se verifican las tareas completadas*/}
                 <p> Te quedan {todos.filter((todo)=>!todo.completed).length} tareas por terminar</p>
+                <article>
+                    <h2>Tareas completadas</h2>
+                    <TodoList todos={done}/>
+                </article>
         </Fragment>
     )
 }
