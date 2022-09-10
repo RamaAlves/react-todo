@@ -1,7 +1,9 @@
-import React, {useState, Fragment, useRef} from "react";
+import React, {useState, Fragment, useRef, useEffect} from "react";
 import { TodoList } from "./Components/TodoList";
 import {v4 as uuidv4 } from "../node_modules/uuid/dist";
 
+const KEY='todoApp.todos'
+const KEY_DONE='todoApp.done'
 
 export function App(){
     //tareas por hacer
@@ -10,14 +12,38 @@ export function App(){
         {id:1, task:"tarea 1", completed: false}
     ])
     
-    //agregar tareas realizadas a nueva lista en un p al final
-    //tareas hechas
+    //tareas completadas
     const [done, setDone] = useState([])
 
     //referencia para obtener el valor del input
     const todoTaskRef = useRef();
 
+    //restaurar tareas desde localStorage
+    useEffect(()=>{
+        const storedTodos = JSON.parse(localStorage.getItem(KEY))
+        if (storedTodos){
+            setTodos(storedTodos)
+        }
+    }, [])
 
+    //restaurar tareas realizadas desde localStorage
+    useEffect(()=>{
+        const storedDone = JSON.parse(localStorage.getItem(KEY_DONE))
+        if (storedDone){
+            setDone(storedDone)
+        }
+    }, [])
+    
+    //resguardo de tareas en el localStorage
+    useEffect(()=>{
+        localStorage.setItem(KEY, JSON.stringify(todos))
+    }, [todos]);
+    
+
+    //resguardo de tareas realizadas en el localStorage
+    useEffect(()=>{
+        localStorage.setItem(KEY_DONE, JSON.stringify(done))
+    }, [done]);
 
     //funcion para verificar el estado completed de cada tarea (se envia como prop hacia todo list y luego a todo item)
     const toggleTodo= (id)=>{
@@ -42,7 +68,7 @@ export function App(){
         todoTaskRef.current.value= null;
     }
     //funcion borrar tareas completas
-    const handleClearAll = ()=>{
+    const handleConfirmTodoDone = ()=>{
         //copia de lista de tareas solo de elementos completos
         const newDone = todos.filter((todo)=>todo.completed);
         //validando que no se encuentre vacio el  array
@@ -58,22 +84,25 @@ export function App(){
         //copia de lista de tareas solo de elementos sin completar
         const newTodos = todos.filter((todo)=>!todo.completed);
         setTodos(newTodos);
-        
     }
 
+    const handleClearTodoDone = ()=>{
+        setDone([])
+    }
 
     return (
         <Fragment>
                 <TodoList todos={todos} toggleTodo={toggleTodo}/>
                 <input ref={todoTaskRef} type="text" placeholder="Nueva Tarea"></input>
                 <button onClick={handleTodoAdd}>➕</button>
-                <button onClick={handleClearAll}>🗑</button>
+                <button onClick={handleConfirmTodoDone}>✔</button>
                 {/* se verifican las tareas completadas*/}
                 <p> Te quedan {todos.filter((todo)=>!todo.completed).length} tareas por terminar</p>
                 <article>
                     <h2>Tareas completadas</h2>
                     <TodoList todos={done}/>
                 </article>
+                <button onClick={handleClearTodoDone}>🗑</button> 
         </Fragment>
     )
 }
