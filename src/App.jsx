@@ -105,20 +105,12 @@ export function App(){
 
     return (
         <Fragment>
-<<<<<<< HEAD
             <h1>Gestor de tareas</h1>
             <input ref={todoTaskRef} type="text" placeholder="Nueva Tarea"></input>
             <button onClick={handleTodoAdd}>➕</button>
             <TodoList todos={todos} toggle={toggleTodo}/>
             <button onClick={handleConfirmTodoDone}>✔ Confirmar tareas realizadas</button>
             {/* se verifican las tareas completadas}*/}
-=======
-            <TodoList todos={todos} toggle={toggleTodo}/>
-            <input ref={todoTaskRef} type="text" placeholder="Nueva Tarea"></input>
-            <button onClick={handleTodoAdd}>➕</button>
-            <button onClick={handleConfirmTodoDone}>✔</button>
-            {/* se verifican las tareas completadas*/}
->>>>>>> 285fc276ef317c370a2404309d7f41b8cf360bfb
             <p> Te quedan {todos.filter((todo)=>!todo.completed).length} tareas por terminar</p>
             {/* seccion de tareas realizadas */}
             <SectionDone todos={done} toggle={toggleDone} handleClear={handleClearTodoDone}/> 
