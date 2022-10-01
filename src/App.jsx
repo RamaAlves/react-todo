@@ -2,6 +2,10 @@ import React, {useState, Fragment, useRef, useEffect} from "react";
 import { TodoList } from "./Components/TodoList";
 import { SectionDone } from "./Components/SectionDone";
 import {v4 as uuidv4 } from "../node_modules/uuid/dist";
+import { SectionTodo } from "./Components/SectionTodo";
+
+import './test.css';
+import { Card } from "./Components/UI/Card";
 
 const KEY='todoApp.todos'
 const KEY_DONE='todoApp.done'
@@ -20,15 +24,13 @@ export function App(){
     const todoTaskRef = useRef();
 
     //restaurar tareas desde localStorage
+    //restaurar tareas realizadas desde localStorage
     useEffect(()=>{
         const storedTodos = JSON.parse(localStorage.getItem(KEY))
         if (storedTodos){
             setTodos(storedTodos)
         }
-    }, [])
-
-    //restaurar tareas realizadas desde localStorage
-    useEffect(()=>{
+        
         const storedDone = JSON.parse(localStorage.getItem(KEY_DONE))
         if (storedDone){
             setDone(storedDone)
@@ -36,39 +38,23 @@ export function App(){
     }, [])
     
     //resguardo de tareas en el localStorage
-    useEffect(()=>{
-        localStorage.setItem(KEY, JSON.stringify(todos))
-    }, [todos]);
-    
-
     //resguardo de tareas realizadas en el localStorage
     useEffect(()=>{
+        localStorage.setItem(KEY, JSON.stringify(todos))
         localStorage.setItem(KEY_DONE, JSON.stringify(done))
-    }, [done]);
-
-    //funcion para verificar el estado completed de cada tarea (se envia como prop hacia todo list y luego a todo item)
-    const toggleTodo= (id)=>{
-        //copia de lista de tareas
-        const newTodos = [...todos];
-        const todo = newTodos.find((todo)=>todo.id===id);
-        todo.completed= !todo.completed;
-        //actualizacion de lista de tareas
-        setTodos(newTodos)
-    }
+    }, [todos, done]);
+    
     //funcion agregar tareas a listado
-    const handleTodoAdd = ()=>{
-        const task= todoTaskRef.current.value;
+    const handleTodoAdd = (toAddTask) =>{
         //validando contenido del input
-        if (task=== '') return;
+        if (toAddTask === '') return;
         //agregando tarea a lista
         setTodos((prevTodos)=>{
-            return [...prevTodos, {id:uuidv4(), task, completed: false}]
+            return [...prevTodos, {id:uuidv4(), task: toAddTask, completed: false}]
         })
-        //reseteando input
-        todoTaskRef.current.value= null;
     }
     //funcion confirmar tareas completadas
-    const handleConfirmTodoDone = ()=>{
+    const handleConfirmTodoDone = () =>{
         //copia de lista de tareas solo de elementos completos
         const newDone = todos.filter((todo)=>todo.completed);
         //validando que no se encuentre vacio el  array
@@ -97,23 +83,29 @@ export function App(){
         setDone(newDone)
     }
 
+    // funcion para verificar el estado completed de cada tarea (se envia como prop hacia todo list y luego a todo item)
+    const toggleTodo = (id)=>{
+        //copia de lista de tareas
+        const newTodos = [...todos];
+        const todo = newTodos.find((todo)=>todo.id===id);
+        todo.completed= !todo.completed;
+        //actualizacion de lista de tareas
+        setTodos(newTodos)
+    }
+
     //funcion para eliminar tarea de lista de tareas realizadas
-    const handleClearTodoDone = ()=>{
+    const handleClearTodoDone = () => {
         const newNotRemove = done.filter((taskDone)=>!taskDone.completed);
         setDone(newNotRemove);
     }
 
     return (
-        <Fragment>
-            <h1>Gestor de tareas</h1>
-            <input ref={todoTaskRef} type="text" placeholder="Nueva Tarea"></input>
-            <button onClick={handleTodoAdd}>➕</button>
-            <TodoList todos={todos} toggle={toggleTodo}/>
-            <button onClick={handleConfirmTodoDone}>✔ Confirmar tareas realizadas</button>
+        <Card>
+            <SectionTodo title={'Gestor de tareas'} onClick={handleTodoAdd} onAdd={handleTodoAdd} todos={todos} onConfirm={handleConfirmTodoDone} onToggle={toggleTodo} />
             {/* se verifican las tareas completadas}*/}
-            <p> Te quedan {todos.filter((todo)=>!todo.completed).length} tareas por terminar</p>
+            <Card ><p className="paragraph"> Te quedan {todos.filter((todo)=>!todo.completed).length} tareas por terminar</p></Card>
             {/* seccion de tareas realizadas */}
-            <SectionDone todos={done} toggle={toggleDone} handleClear={handleClearTodoDone}/> 
-        </Fragment>
+            {done.length > 0 && <SectionDone title={'Tareas Realizadas'} showInput={false} onClick={() => {}} todos={done} toggle={toggleDone} handleClear={handleClearTodoDone}/>} 
+        </Card>
     )
 }
