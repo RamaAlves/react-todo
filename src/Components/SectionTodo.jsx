@@ -30,19 +30,21 @@ export function SectionTodo(props) {
 
   return (
     <Card>
-      <section>
+      <section className="container-section-todo">
         <h2>Tareas completadas</h2>
-        <input
-          type="text"
-          placeholder="Nueva Tarea"
-          onChange={handleChange}
-          value={inputValue}
-        ></input>
-        <button type="button" onClick={addTask} disabled={inputDisable}>
-          ➕
-        </button>
+        <div className="container-form-task">
+          <input
+            type="text"
+            placeholder="Nueva Tarea"
+            onChange={handleChange}
+            value={inputValue}
+          ></input>
+          <button type="button" onClick={addTask} disabled={inputDisable}>
+            ➕
+          </button>  
+        </div>
         <TodoList todos={props.todos} toggle={props.onToggle} />
-        <button onClick={props.onConfirm}>
+        <button className="confirm-task" onClick={props.onConfirm}>
           ✔ Confirmar tareas realizadas
         </button>
       </section>

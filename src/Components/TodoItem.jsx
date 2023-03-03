@@ -16,7 +16,7 @@ export function TodoItem({todo, toggle}){
     }
 
     return (
-        <li>
+        <li className="todo-item">
             <p>{task}</p>
             <input type="checkbox" checked={completed} onChange={handleTodoClick}/>
         </li>

@@ -7,11 +7,14 @@ import { Card } from "./UI/Card"
 export function SectionDone ({todos, toggle, handleClear}){
     return(
         <Card>
-            <section>
+            <section className='container-section-todo'>
                 <h2>Tareas completadas</h2>
                 <TodoList todos={todos} toggle={toggle} />
-                <p>{todos.filter((todo)=>todo.completed).length} tareas listas para ser eliminadas</p>
-                <button onClick={handleClear}>🗑</button>
+                <div className='info-bin'>
+                    <button className='bin' onClick={handleClear}>
+                        {todos.filter((todo)=>todo.completed).length} tareas listas para ser eliminadas 🗑
+                    </button>
+                </div>
             </section>
         </Card>
     )

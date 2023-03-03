@@ -4,7 +4,7 @@ import { SectionDone } from "./Components/SectionDone";
 import {v4 as uuidv4 } from "../node_modules/uuid/dist";
 import { SectionTodo } from "./Components/SectionTodo";
 
-import './test.css';
+import './styles/sass/App.css';
 import { Card } from "./Components/UI/Card";
 
 const KEY='todoApp.todos'
